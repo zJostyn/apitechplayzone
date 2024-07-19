@@ -43,14 +43,27 @@ const verificarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.verificarUsuario = verificarUsuario;
-const createUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { usu_user, usu_pass, id_tipo } = req.body;
-    const response = yield database_1.pool.query('INSERT INTO usuarios (usu_user, usu_pass, id_tipo) VALUES ($1, $2, $3)', [usu_user, usu_pass, id_tipo]);
-    return res.json({
-        message: 'User created succesfully',
-        body: {
-            usu_user, usu_pass, id_tipo
+function createUsuario(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { usu_user, usu_pass, id_tipo } = req.body;
+        const query = 'CALL insert_user_if_not_exists($1, $2, $3)';
+        const values = [usu_user, usu_pass, id_tipo];
+        try {
+            const client = yield database_1.pool.connect();
+            const result = yield client.query(query, values);
+            client.release();
+            if (result.rowCount != null) {
+                if (result.rowCount > 0) {
+                    res.status(200).json({ message: 'Se creo el dato correctamente!' });
+                }
+                else {
+                    res.status(400).json({ message: 'No se pudo guardar el dato!' });
+                }
+            }
+        }
+        catch (err) {
+            res.status(500).json({ error: 'Error en el servidor!' });
         }
     });
-});
+}
 exports.createUsuario = createUsuario;
