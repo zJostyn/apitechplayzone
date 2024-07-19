@@ -9,4 +9,4 @@ export const pool = new Pool({
     ssl: {
         rejectUnauthorized: false // Esta configuración permite conexiones SSL sin verificar el certificado del servidor. Para mayor seguridad, debes proveer un certificado de servidor adecuado.
       }
-})
+});
