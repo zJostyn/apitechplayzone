@@ -37,19 +37,19 @@ export const verificarUsuario = async (req: Request, res: Response): Promise<Res
 };
 
 export async function createUsuario(req: Request, res: Response) {
-    const {usu_user, usu_pass, id_tipo} = req.body;
-    const query = 'CALL insert_user_if_not_exists($1, $2, $3)'
+    const { usu_user, usu_pass, id_tipo } = req.body;
+    const query = 'SELECT insert_user_if_not_exists($1, $2, $3) AS success';
     const values = [usu_user, usu_pass, id_tipo];
+
     try {
         const client = await pool.connect();
         const result = await client.query(query, values);
         client.release();
-        if(result.rowCount != null) {
-            if (result.rowCount > 0) {
-                res.status(200).json({ message: 'Se creo el dato correctamente!' })
-            } else {
-                res.status(400).json({ message: 'No se pudo guardar el dato!' })
-            }
+
+        if (result.rows[0].success) {
+            res.status(200).json({ message: 'Se creó el dato correctamente!' });
+        } else {
+            res.status(400).json({ message: 'No se pudo guardar el dato. El usuario ya existe.' });
         }
     } catch (err) {
         res.status(500).json({ error: 'Error en el servidor!' });
