@@ -38,10 +38,7 @@ export const verificarUsuario = async (req: Request, res: Response): Promise<Res
 
 export const createUsuario = async (req: Request, res: Response): Promise<Response> =>{
     const {usu_user, usu_pass, id_tipo} = req.body;
-    const response: QueryResult = await pool.query('SELECT COUNT(*) FROM usuarios WHERE usu_user = $1', [usu_user]);
-    if (response.rows[0].count == 0) {
-        await pool.query('INSERT INTO usuarios (usu_user, usu_pass, id_tipo) VALUES ($1, $2, $3)', [usu_user, usu_pass, id_tipo]);
-      }
+    const response: QueryResult = await pool.query('CALL insert_user_if_not_exists($1, $2, $3)', [usu_user, usu_pass, id_tipo])
     return res.json({
         message: 'User created succesfully',
         body:{
