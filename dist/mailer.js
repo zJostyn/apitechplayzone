@@ -7,8 +7,8 @@ exports.transporter = nodemailer.createTransport({
     port: 465,
     secure: true, // upgrade later with STARTTLS
     auth: {
-        user: "elianlalangui@gmail.com",
-        pass: "oyzz baqz veox ndeb",
+        user: 'techplayzonesup@gmail.com', // Correo con el que se enviaran los correos
+        pass: 'eqgbiiwwnrybhoqm',  // Contraseña de aplicacion creada en google
     },
 });
 exports.transporter.verity().then(() => {
